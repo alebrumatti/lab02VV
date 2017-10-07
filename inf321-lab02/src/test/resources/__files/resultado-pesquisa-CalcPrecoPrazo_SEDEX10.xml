@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cResultado xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/">
+  <Servicos>
+    <cServico>
+      <Codigo>40215</Codigo>
+      <Valor>0</Valor>
+      <PrazoEntrega>0</PrazoEntrega>
+      <ValorMaoPropria>0,00</ValorMaoPropria>
+      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+      <ValorValorDeclarado>0,00</ValorValorDeclarado>
+      <EntregaDomiciliar/>
+      <EntregaSabado/>
+      <Erro>008</Erro>
+      <MsgErro>Serviço indisponível para o trecho informado.</MsgErro>
+      <ValorSemAdicionais>0</ValorSemAdicionais>
+      <obsFim/>
+    </cServico>
+  </Servicos>
+</cResultado>
