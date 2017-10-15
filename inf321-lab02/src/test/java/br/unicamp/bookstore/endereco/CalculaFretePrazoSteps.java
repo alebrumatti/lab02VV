@@ -18,6 +18,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 
 import br.unicamp.bookstore.Configuracao;
 import br.unicamp.bookstore.model.Endereco;
+import br.unicamp.bookstore.model.PrecoPrazo;
 import br.unicamp.bookstore.service.CalculaFretePrazoService;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -36,12 +37,14 @@ public class CalculaFretePrazoSteps {
 	@InjectMocks
 	private CalculaFretePrazoService calculaFretePrazoService;
 
+	private PrecoPrazo precoPrazo;
+	
 	private String cep;
-	private float peso;
-	private float altura;
-	private float largura;
-	private float comprimento;
-	private int	tipoEntrega;
+	private String peso;
+	private String altura;
+	private String largura;
+	private String comprimento;
+	private String tipoEntrega;
 
 	private Throwable throwable;
 
@@ -53,16 +56,34 @@ public class CalculaFretePrazoSteps {
 		MockitoAnnotations.initMocks(this);
 		Mockito.when(configuration.getConsultaPrecoPrazoUrl()).thenReturn("http://localhost:9876/ws");
 		cep = null;
-		peso = 0;
-		altura = 0;
-		largura = 0;
-		comprimento = 0;
-		tipoEntrega = 0;
+		peso = null;
+		altura = null;
+		largura = null;
+		comprimento = null;
+		tipoEntrega = null;
 		throwable = null;
 	}
 
 	@After
 	public void teardown() {
 		wireMockServer.stop();
+	}
+	
+	@Dado("^uma entrega válida:$")
+	public void uma_entrega_valida(Map<String, String> map) throws Throwable {
+		cep = map.get("cep");
+		peso = map.get("peso");
+		largura = map.get("largura");
+		altura = map.get("altura");
+		comprimento = map.get("comprimento");
+		tipoEntrega = map.get("tipoEntrega");
+		
+		wireMockServer.stubFor(get(urlMatching("/ws/"+ cep + ".*")).willReturn(aResponse().withStatus(200)
+				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-CalculaFretePrazo.xml")));
+	}
+	
+	@Quando("^eu informo o CEP onde o pedido deve ser entregue$")
+	public void eu_informo_o_CEP_onde_o_pedido_deve_ser_entregue() throws Throwable {
+		throwable = catchThrowable(() -> this.precoPrazo = calculaFretePrazoService.calcular(cep, peso, largura, altura, comprimento, tipoEntrega));
 	}
 }

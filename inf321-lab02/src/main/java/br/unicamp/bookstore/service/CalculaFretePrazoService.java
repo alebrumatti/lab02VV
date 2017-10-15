@@ -9,9 +9,8 @@ public class CalculaFretePrazoService {
 	
 	private Configuracao configuracao;
 
-	public PrecoPrazo calcular(Produto produto, TipoEntregaEnum tipoEntregar) throws Exception {
+	public PrecoPrazo calcular(String cep, String peso, String largura, String altura, String comprimento, String tipoDeEntrega) throws Exception {
 	    String url = String.format("%s/%s/xml", configuracao.getBuscarEnderecoUrl(), cep);
 	    return new RemoteService().getAndParseXml(url, Endereco.class);
 	  }
-	
 }
