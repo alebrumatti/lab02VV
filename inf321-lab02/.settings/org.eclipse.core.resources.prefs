@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/test/java/br/unicamp/bookstore/endereco/BuscaEnderecoSteps.java=UTF-8
 encoding//src/test/java/br/unicamp/bookstore/endereco/CalculaFretePrazoSteps.java=UTF-8
+encoding//src/test/java/br/unicamp/bookstore/endereco/StatusEntregaSteps.java=UTF-8
 encoding//src/test/resources/features/BuscaEndereco.feature=UTF-8
 encoding//src/test/resources/features/StatusEntrega.feature=UTF-8
+encoding/<project>=UTF-8
