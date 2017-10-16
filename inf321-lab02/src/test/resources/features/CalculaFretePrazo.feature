@@ -17,6 +17,7 @@ Funcionalidade: Calcular frete e tempo de entrega​ previsto
 	  Então o resultado deve ser o valor de frete e tempo de entrega:
 	  	| Codigo | Valor | PrazoEntrega | ValorMaoPropria | ValorAvisoRecebimento | ValorValorDeclarado | EntregaDomiciliar | EntregaSabado | Erro | MsgErro |   	
 	  	| 40010  | 13,20 | 1			| 0,00			  | 0,00				  | 0,00				| S					| S				| 0	   |		 |	 	  	
+	  E o resultado deve ser salvo no banco de dados
 	  	
 	Cenário: CEP inválido
 	  Dado um CEP inválido:

@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import br.unicamp.bookstore.Configuracao;
+import br.unicamp.bookstore.dao.DadosDeEntregaDAO;
 import br.unicamp.bookstore.model.PrecoPrazo;
 import br.unicamp.bookstore.service.CalculaFretePrazoService;
 import cucumber.api.java.After;
@@ -30,6 +31,9 @@ public class CalculaFretePrazoSteps {
 
 	public WireMockServer wireMockServer;
 
+	@Mock
+	private DadosDeEntregaDAO dadosDeEntregaDAO;
+	
 	@Mock
 	private Configuracao configuration;
 
@@ -54,6 +58,7 @@ public class CalculaFretePrazoSteps {
 		wireMockServer.start();
 		MockitoAnnotations.initMocks(this);
 		Mockito.when(configuration.getConsultaPrecoPrazoUrl()).thenReturn("http://localhost:9876/ws");
+		dadosDeEntregaDAO = Mockito.mock(DadosDeEntregaDAO.class);
 		cep = null;
 		peso = null;
 		altura = null;
@@ -121,5 +126,10 @@ public class CalculaFretePrazoSteps {
 	public void uma_excecao_deve_ser_lancada_com_a_mensagem_de_erro(String message)
 			throws Throwable {
 		assertThat(throwable).hasMessage(message);
+	}
+	
+	@E("^o resultado deve ser salvo no banco de dados$")
+	public void o_resultado_deve_ser_salvo_no_banco_de_dados() throws Throwable {
+		Mockito.verify(dadosDeEntregaDAO, Mockito.times(1)).saveDadosDeEntrega(precoPrazo.getValorFrete(), precoPrazo.getPrazoEntrega());
 	}
 }
