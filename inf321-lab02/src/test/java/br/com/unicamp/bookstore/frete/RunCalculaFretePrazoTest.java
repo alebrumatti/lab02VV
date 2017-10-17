@@ -1,4 +1,4 @@
-package br.unicamp.bookstore.endereco;
+package br.com.unicamp.bookstore.frete;
 
 import org.junit.runner.RunWith;
 
@@ -8,7 +8,7 @@ import cucumber.api.junit.Cucumber;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         plugin = { "pretty", "html:target/cucumber" },
-        glue = "br.unicamp.bookstore.endereco",
+        glue = "br.unicamp.bookstore.frete",
         features = "classpath:features/CalculaFretePrazo.feature"
 )
 public class RunCalculaFretePrazoTest {

@@ -2,8 +2,6 @@ package br.unicamp.bookstore.service;
 
 import br.unicamp.bookstore.Configuracao;
 import br.unicamp.bookstore.model.PrecoPrazo;
-import br.unicamp.bookstore.model.Produto;
-import br.unicamp.bookstore.model.TipoEntregaEnum;
 
 public class CalculaFretePrazoService {
 	
@@ -11,6 +9,6 @@ public class CalculaFretePrazoService {
 
 	public PrecoPrazo calcular(String cep, String peso, String largura, String altura, String comprimento, String tipoDeEntrega) throws Exception {
 	    String url = String.format("%s/%s/xml", configuracao.getBuscarEnderecoUrl(), cep);
-	    return new RemoteService().getAndParseXml(url, Endereco.class);
+	    return new RemoteService().getAndParseXml(url, PrecoPrazo.class);
 	  }
 }

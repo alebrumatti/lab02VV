@@ -37,7 +37,7 @@ Funcionalidade: Calcular frete e tempo de entrega​ previsto
 	  	| tipoDeEntrega | 40010    |
 	  Quando eu informo o CEP onde o pedido deve ser entregue	
 	  E o serviço CalculaFretePrazo está indisponível
-	  Então uma exceção deve ser lançada com a mensagem de erro:
+	  Então uma exceção deve ser lançada com o erro e a mensagem de erro:
 	  	| Erro | MsgErro								|
 		| 7	   | Serviço indisponível, tente mais tarde |
 		

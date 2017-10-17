@@ -1,4 +1,4 @@
-package br.unicamp.bookstore.endereco;
+package br.com.unicamp.bookstore.frete;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -32,10 +32,11 @@ public class CalculaFretePrazoSteps {
 	public WireMockServer wireMockServer;
 
 	@Mock
-	private DadosDeEntregaDAO dadosDeEntregaDAO;
+	private Configuracao configuration;
 	
 	@Mock
-	private Configuracao configuration;
+	private DadosDeEntregaDAO dadosDeEntregaDAO;
+	
 
 	@InjectMocks
 	private CalculaFretePrazoService calculaFretePrazoService;
@@ -122,8 +123,8 @@ public class CalculaFretePrazoSteps {
 		assertThat(throwable).isNull();
 	}
 	
-	@Então("^uma exceção deve ser lançada com a mensagem de erro:$")
-	public void uma_excecao_deve_ser_lancada_com_a_mensagem_de_erro(String message)
+	@Então("^uma exceção deve ser lançada com o erro e a mensagem de erro:$")
+	public void uma_excecao_deve_ser_lancada_com_o_erro_e_a_mensagem_de_erro(String message)
 			throws Throwable {
 		assertThat(throwable).hasMessage(message);
 	}
