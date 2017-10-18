@@ -24,7 +24,7 @@ Funcionalidade: Buscar Endereço
     Quando eu informo o CEP na busca de endereço
     Então uma exceção deve ser lançada com a mensagem de erro:
     """
-    O CEP informado é invalido
+    O CEP informado e invalido
     """
 
   Cenário: Serviço ViaCep não responde
@@ -34,5 +34,5 @@ Funcionalidade: Buscar Endereço
     Quando eu informo o CEP na busca de endereço
     Então uma exceção deve ser lançada com a mensagem de erro:
     """
-    Serviço indisponivel
+    Servico indisponivel
     """
