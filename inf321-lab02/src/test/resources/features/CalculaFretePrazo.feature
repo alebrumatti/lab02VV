@@ -16,14 +16,14 @@ Funcionalidade: Calcular frete e tempo de entrega​ previsto
 	  Quando eu informo o CEP onde o pedido deve ser entregue
 	  Então o resultado deve ser o valor de frete e tempo de entrega:
 	  	| Codigo | Valor | PrazoEntrega | ValorMaoPropria | ValorAvisoRecebimento | ValorValorDeclarado | EntregaDomiciliar | EntregaSabado | Erro | MsgErro |   	
-	  	| 40010  | 13,20 | 1			| 0,00			  | 0,00				  | 0,00				| S					| S				| 0	   |		 |	 	  	
+	  	| 41106  | 16,10 | 5			| 0,00			  | 0,00				  | 0,00				| S					| N				| 0	   |		 |	 	  	
 	  E o resultado deve ser salvo no banco de dados
 	  	
 	Cenário: CEP inválido
 	  Dado um CEP inválido:
 		| cep | 1234567890 |
 	  Quando eu informo o CEP onde o pedido deve ser entregue				  
-	  Então uma exceção deve ser lançada com a mensagem de erro:
+	  Então uma exceção deve ser lançada com o erro e a mensagem de erro:
 	  	| Erro | MsgErro 				 |   	
 	  	| -3   | CEP de destino inválido |
 	  
@@ -35,8 +35,8 @@ Funcionalidade: Calcular frete e tempo de entrega​ previsto
 	  	| altura 		| 50 	   |
 	  	| comprimento 	| 50 	   |
 	  	| tipoDeEntrega | 40010    |
-	  Quando eu informo o CEP onde o pedido deve ser entregue	
 	  E o serviço CalculaFretePrazo está indisponível
+	  Quando eu informo o CEP onde o pedido deve ser entregue	
 	  Então uma exceção deve ser lançada com o erro e a mensagem de erro:
 	  	| Erro | MsgErro								|
 		| 7	   | Serviço indisponível, tente mais tarde |

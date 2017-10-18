@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cResultado xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/">
+<!-- <cResultado xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/"> -->
   <Servicos>
-    <cServico>
+    <!-- <cServico> -->
       <Codigo>41106</Codigo>
       <Valor>16,10</Valor>
       <PrazoEntrega>5</PrazoEntrega>
@@ -14,8 +14,8 @@
       <MsgErro/>
       <ValorSemAdicionais>16,10</ValorSemAdicionais>
       <obsFim/>
-    </cServico>
-    <cServico>
+    <!-- </cServico> -->
+    <!-- <cServico>
       <Codigo>40215</Codigo>
       <Valor>0</Valor>
       <PrazoEntrega>0</PrazoEntrega>
@@ -42,6 +42,6 @@
       <MsgErro/>
       <ValorSemAdicionais>17,20</ValorSemAdicionais>
       <obsFim/>
-    </cServico>
+    </cServico> -->
   </Servicos>
-</cResultado>
+<!-- </cResultado> -->

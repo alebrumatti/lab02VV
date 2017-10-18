@@ -1,4 +1,4 @@
-package br.com.unicamp.bookstore.frete;
+package br.unicamp.bookstore.frete;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -9,7 +9,6 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import java.util.List;
 import java.util.Map;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -33,12 +32,10 @@ public class CalculaFretePrazoSteps {
 
 	@Mock
 	private Configuracao configuration;
-	
+
 	@Mock
 	private DadosDeEntregaDAO dadosDeEntregaDAO;
 	
-
-	@InjectMocks
 	private CalculaFretePrazoService calculaFretePrazoService;
 
 	private PrecoPrazo precoPrazo;
@@ -60,6 +57,7 @@ public class CalculaFretePrazoSteps {
 		MockitoAnnotations.initMocks(this);
 		Mockito.when(configuration.getConsultaPrecoPrazoUrl()).thenReturn("http://localhost:9876/ws");
 		dadosDeEntregaDAO = Mockito.mock(DadosDeEntregaDAO.class);
+		calculaFretePrazoService = new CalculaFretePrazoService(configuration, dadosDeEntregaDAO);
 		cep = null;
 		peso = null;
 		altura = null;
@@ -84,7 +82,7 @@ public class CalculaFretePrazoSteps {
 		tipoEntrega = map.get("tipoEntrega");
 		
 		wireMockServer.stubFor(get(urlMatching("/ws/"+ cep + ".*")).willReturn(aResponse().withStatus(200)
-				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-CalculaFretePrazo.xml")));
+				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-CalcPrecoPrazo.xml")));
 	}
 	
 	@Dado("^um CEP inválido:$")
@@ -92,8 +90,8 @@ public class CalculaFretePrazoSteps {
 		cep = map.get("cep");
 		
 		wireMockServer.stubFor(get(urlMatching("/ws/" + cep + ".*"))
-				.willReturn(aResponse().withStatus(400).withHeader("Content-Type", "text/xml")
-						.withBodyFile("resultado-pesquisa-CalculaFretePrazo_BAD.xml")));
+				.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "text/xml")
+						.withBodyFile("resultado-pesquisa-CalcPrecoPrazo_BAD.xml")));
 	}
 	
 	@Quando("^eu informo o CEP onde o pedido deve ser entregue$")
@@ -103,16 +101,16 @@ public class CalculaFretePrazoSteps {
 	
 	@E("^o serviço CalculaFretePrazo está indisponível$")
 	public void o_servico_CalculaFretePrazo_esta_indisponível() throws Throwable {
-		wireMockServer.stubFor(get(urlMatching("/ws/.*")).willReturn(aResponse().withStatus(200)
-				.withFixedDelay(6000).withBodyFile("resultado-pesquisa-CalculaFretePrazo_out.xml")));
+		wireMockServer.stubFor(get(urlMatching("/ws/"+ cep + ".*")).willReturn(aResponse().withStatus(200)
+				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-CalcPrecoPrazo_ERR.xml")));		
 	}
 	
 	@Então("^o resultado deve ser o valor de frete e tempo de entrega:$")
 	public void o_resultado_deve_ser_o_valor_de_frete_e_tempo_de_entrega(List<Map<String,String>> resultado)
 			throws Throwable {
-		assertThat(this.precoPrazo.getCodigo()).isEqualTo(resultado.get(0).get("Codigo"));
+		assertThat(this.precoPrazo.getCodigo()).isEqualTo(Integer.parseInt(resultado.get(0).get("Codigo")));
 		assertThat(this.precoPrazo.getValor()).isEqualTo(resultado.get(0).get("Valor"));
-		assertThat(this.precoPrazo.getPrazoEntrega()).isEqualTo(resultado.get(0).get("PrazoEntrega"));
+		assertThat(this.precoPrazo.getPrazoEntrega()).isEqualTo(Integer.parseInt(resultado.get(0).get("PrazoEntrega")));
 		assertThat(this.precoPrazo.getValorMaoPropria()).isEqualTo(resultado.get(0).get("ValorMaoPropria"));
 		assertThat(this.precoPrazo.getValorAvisoRecebimento()).isEqualTo(resultado.get(0).get("ValorAvisoRecebimento"));
 		assertThat(this.precoPrazo.getValorValorDeclarado()).isEqualTo(resultado.get(0).get("ValorValorDeclarado"));
@@ -124,13 +122,19 @@ public class CalculaFretePrazoSteps {
 	}
 	
 	@Então("^uma exceção deve ser lançada com o erro e a mensagem de erro:$")
-	public void uma_excecao_deve_ser_lancada_com_o_erro_e_a_mensagem_de_erro(String message)
+	public void uma_excecao_deve_ser_lancada_com_o_erro_e_a_mensagem_de_erro(List<Map<String,String>> resultado)
 			throws Throwable {
-		assertThat(throwable).hasMessage(message);
+		assertThat(this.precoPrazo.getErro()).isEqualTo(resultado.get(0).get("Erro"));
+		assertThat(this.precoPrazo.getMsgErro()).isEqualTo(resultado.get(0).get("MsgErro"));
 	}
 	
 	@E("^o resultado deve ser salvo no banco de dados$")
 	public void o_resultado_deve_ser_salvo_no_banco_de_dados() throws Throwable {
 		Mockito.verify(dadosDeEntregaDAO, Mockito.times(1)).saveDadosDeEntrega(precoPrazo.getValorFrete(), precoPrazo.getPrazoEntrega());
+	}
+	
+	@Então("^uma exceção deve ser lançada com a mensagem de erro:$")
+	public void uma_excecao_deve_ser_lancada_com_a_mensagem_de_erro(String message) throws Throwable {
+		assertThat(throwable).hasMessage(message);
 	}
 }

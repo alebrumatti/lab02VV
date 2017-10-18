@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Servicos>
+	<Erro>-3</Erro>
+    <MsgErro>CEP de destino inválido</MsgErro>
+</Servicos>

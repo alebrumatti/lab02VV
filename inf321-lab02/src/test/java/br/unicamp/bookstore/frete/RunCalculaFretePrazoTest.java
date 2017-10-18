@@ -1,4 +1,4 @@
-package br.com.unicamp.bookstore.frete;
+package br.unicamp.bookstore.frete;
 
 import org.junit.runner.RunWith;
 
