@@ -19,7 +19,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.pt.Quando;
 import cucumber.api.java.pt.Dado;
 import cucumber.api.java.pt.E;
-import cucumber.api.java.pt.Então;
+import cucumber.api.java.pt.EntÃ£o;
 
 public class ConsultaStatusEntregaSteps {
 	public WireMockServer wireMockServer;
@@ -54,7 +54,7 @@ public class ConsultaStatusEntregaSteps {
 		wireMockServer.stop();
 	}
 
-	@Dado("^um codigo de rastreamento válido:$")
+	@Dado("^um codigo de rastreamento vï¿½lido:$")
 	public void eu_possuo_codigo_valido(Map<String, String> map) throws Throwable
 	{
 		codigo = map.get("codigo");
@@ -82,13 +82,13 @@ public class ConsultaStatusEntregaSteps {
 		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
 	}
 
-	@Então("^uma exceção deve ser lançada com a mensagem de erro:$")
+	@EntÃ£o("^uma exceï¿½ï¿½o deve ser lanï¿½ada com a mensagem de erro:$")
 	public void codigo_rastreamento_invalido(String erro) throws Throwable
 	{
 		assertThat(throwable).hasMessage(erro);
 	}
 
-	@E("^o serviço nao retorna resultados$")
+	@E("^o serviï¿½o nao retorna resultados$")
 	public void codigo_valido_retorno_vazio(Map<String, String> map) throws Throwable
 	{
 		codigo = map.get("codigo");
@@ -96,7 +96,7 @@ public class ConsultaStatusEntregaSteps {
 				.withHeader("Content-Type", "text/xml").withBody("resultado-pesquisa-StatusEntrega_VAZIO.xml")));
 	}
 
-	@Então("^uma mensagem de erro deve ser exibida$")
+	@EntÃ£o("^uma mensagem de erro deve ser exibida$")
 	public void retorno_vazio_mensagem(String mensagem) throws Throwable
 	{
 		//assertThat(status.getErro()).isEqualTo(mensagem);
