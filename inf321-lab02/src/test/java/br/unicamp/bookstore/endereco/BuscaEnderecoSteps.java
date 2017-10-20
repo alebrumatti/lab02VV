@@ -8,14 +8,11 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 import java.util.List;
 import java.util.Map;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
 import com.github.tomakehurst.wiremock.WireMockServer;
-
 import br.unicamp.bookstore.Configuracao;
 import br.unicamp.bookstore.model.Endereco;
 import br.unicamp.bookstore.service.BuscaEnderecoService;

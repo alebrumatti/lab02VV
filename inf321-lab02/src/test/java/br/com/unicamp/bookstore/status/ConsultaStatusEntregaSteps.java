@@ -5,6 +5,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
+
+import java.util.List;
 import java.util.Map;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,6 +24,7 @@ import cucumber.api.java.pt.E;
 import cucumber.api.java.pt.Então;
 
 public class ConsultaStatusEntregaSteps {
+	
 	public WireMockServer wireMockServer;
 
 	@Mock
@@ -39,10 +42,10 @@ public class ConsultaStatusEntregaSteps {
 	@Before
 	public void setUp()
 	{
-		wireMockServer = new WireMockServer(9966);
+		wireMockServer = new WireMockServer(9876);
 		wireMockServer.start();
 		MockitoAnnotations.initMocks(this);
-		Mockito.when(configuration.getStatusEntregaUrl()).thenReturn("https://localhost:9966/ws");
+		Mockito.when(configuration.getStatusEntregaUrl()).thenReturn("https://localhost:9876/ws");
 		status = null;
 		codigo = null;
 		throwable = null;
@@ -53,54 +56,59 @@ public class ConsultaStatusEntregaSteps {
 	{
 		wireMockServer.stop();
 	}
-
-	@Dado("^um codigo de rastreamento v�lido:$")
-	public void eu_possuo_codigo_valido(Map<String, String> map) throws Throwable
-	{
+	
+	
+	@Dado("^um codigo de rastreamento válido:$")
+	public void um_codigo_de_rastreamento_válido(Map<String, String> map) throws Throwable {
 		codigo = map.get("codigo");
 		wireMockServer.stubFor(get(urlMatching("/ws/" + codigo + ".*")).willReturn(aResponse().withStatus(200)
 				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-StatusEntrega.xml")));
 	}
 
-	@Dado("^um codigo de rastreamento invalido$")
-	public void eu_possuo_codigo_invalido(Map<String, String> map) throws Throwable
-	{
+	@Quando("^eu informo o codigo de rastreamento válido$")
+	public void eu_informo_o_codigo_de_rastreamento_válido() throws Throwable {
+		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
+	}
+
+	@Então("^o resultado deve ser:$")
+	public void o_resultado_deve_ser(List<Map<String,String>> resultado) throws Throwable {
+		assertThat(this.status.getTipo()).isEqualTo(resultado.get(0).get("Tipo"));
+		assertThat(this.status.getStatus()).isEqualTo(resultado.get(0).get("Status"));
+		assertThat(this.status.getDescricao()).isEqualTo(resultado.get(0).get("Descricao"));
+		assertThat(throwable).isNull();
+	}
+
+	@Dado("^um codigo de rastreamento invalido:$")
+	public void um_codigo_de_rastreamento_invalido(Map<String, String> map) throws Throwable {
 		codigo = map.get("codigo");
 		wireMockServer.stubFor(get(urlMatching("/ws/" + codigo + ".*")).willReturn(aResponse().withStatus(200)
 				.withHeader("Content-Type", "text/xml").withBody("resultado-pesquisa-StatusEntrega_ERR.xml")));
 	}
 
 	@Quando("^eu informo um codigo fora do padrao do manual$")
-	public void codigo_fora_padrao_manual(Map<String, String> map) throws Throwable
-	{
-		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
+	public void eu_informo_um_codigo_fora_do_padrao_do_manual(Map<String, String> map) throws Throwable {
+	    throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
 	}
 
-	@Quando("^codigo com menos de 13 caracteres$")
-	public void codigo_menos_caracteres(Map<String, String> map) throws Throwable
-	{
-		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
-	}
-
-	@Então("^uma exce��o deve ser lan�ada com a mensagem de erro:$")
-	public void codigo_rastreamento_invalido(String erro) throws Throwable
-	{
+	@Então("^uma exceção deve ser lançada com a mensagem de erro:$")
+	public void uma_exceção_deve_ser_lançada_com_a_mensagem_de_erro(String erro) throws Throwable {
 		assertThat(throwable).hasMessage(erro);
 	}
 
-	@E("^o servi�o nao retorna resultados$")
-	public void codigo_valido_retorno_vazio(Map<String, String> map) throws Throwable
-	{
+	@Quando("^eu informo um codigo com menos de 13 caracteres$")
+	public void eu_informo_um_codigo_com_menos_de_caracteres(int arg1) throws Throwable {
+		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
+	}
+
+	@Quando("^o serviço nao retorna resultados$")
+	public void o_serviço_nao_retorna_resultados(Map<String, String> map) throws Throwable {
 		codigo = map.get("codigo");
 		wireMockServer.stubFor(get(urlMatching("/ws/" + codigo + ".*")).willReturn(aResponse().withStatus(200)
 				.withHeader("Content-Type", "text/xml").withBody("resultado-pesquisa-StatusEntrega_VAZIO.xml")));
 	}
 
 	@Então("^uma mensagem de erro deve ser exibida$")
-	public void retorno_vazio_mensagem(String mensagem) throws Throwable
-	{
-		//assertThat(status.getErro()).isEqualTo(mensagem);
-		assertThat("").isEqualTo(mensagem);
-	}
-	
+	public void uma_mensagem_de_erro_deve_ser_exibida(String message) throws Throwable {
+		assertThat(throwable).hasMessage(message);
+	}	
 }
