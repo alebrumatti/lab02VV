@@ -4,6 +4,9 @@ import javax.xml.bind.annotation.XmlElement;
 
 public class StatusEncomenda {
 
+	@XmlElement(name = "codigo")
+	private String codigo;
+
 	@XmlElement(name = "tipo")
 	private String tipo;
 
@@ -12,7 +15,14 @@ public class StatusEncomenda {
 
 	@XmlElement(name = "descricao")
 	private String descricao;
+	
+	@XmlElement(name = "erro")
+	private String erro;
 
+	public String getCodigo() {
+		return codigo;
+	}
+	
 	public String getTipo() {
 		return tipo;
 	}
@@ -23,6 +33,10 @@ public class StatusEncomenda {
 
 	public String getDescricao() {
 		return descricao;
+	}
+	
+	public String getErro() {
+		return erro;
 	}
 
 }

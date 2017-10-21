@@ -45,7 +45,7 @@ public class ConsultaStatusEntregaSteps {
 		wireMockServer = new WireMockServer(9876);
 		wireMockServer.start();
 		MockitoAnnotations.initMocks(this);
-		Mockito.when(configuration.getStatusEntregaUrl()).thenReturn("https://localhost:9876/ws");
+		Mockito.when(configuration.getStatusEntregaUrl()).thenReturn("http://localhost:9876/ws");
 		status = null;
 		codigo = null;
 		throwable = null;
@@ -72,8 +72,7 @@ public class ConsultaStatusEntregaSteps {
 
 	@Então("^o resultado deve ser:$")
 	public void o_resultado_deve_ser(List<Map<String,String>> resultado) throws Throwable {
-		assertThat(this.status.getTipo()).isEqualTo(resultado.get(0).get("Tipo"));
-		assertThat(this.status.getStatus()).isEqualTo(resultado.get(0).get("Status"));
+		assertThat(this.status.getCodigo()).isEqualTo(resultado.get(0).get("Codigo"));
 		assertThat(this.status.getDescricao()).isEqualTo(resultado.get(0).get("Descricao"));
 		assertThat(throwable).isNull();
 	}
@@ -82,33 +81,30 @@ public class ConsultaStatusEntregaSteps {
 	public void um_codigo_de_rastreamento_invalido(Map<String, String> map) throws Throwable {
 		codigo = map.get("codigo");
 		wireMockServer.stubFor(get(urlMatching("/ws/" + codigo + ".*")).willReturn(aResponse().withStatus(200)
-				.withHeader("Content-Type", "text/xml").withBody("resultado-pesquisa-StatusEntrega_ERR.xml")));
+				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-StatusEntrega_ERR.xml")));
 	}
 
 	@Quando("^eu informo um codigo fora do padrao do manual$")
-	public void eu_informo_um_codigo_fora_do_padrao_do_manual(Map<String, String> map) throws Throwable {
+	public void eu_informo_um_codigo_fora_do_padrao_do_manual() throws Throwable {
 	    throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
-	}
-
-	@Então("^uma exceção deve ser lançada com a mensagem de erro:$")
-	public void uma_exceção_deve_ser_lançada_com_a_mensagem_de_erro(String erro) throws Throwable {
-		assertThat(throwable).hasMessage(erro);
-	}
+	}	
 
 	@Quando("^eu informo um codigo com menos de 13 caracteres$")
-	public void eu_informo_um_codigo_com_menos_de_caracteres(int arg1) throws Throwable {
+	public void eu_informo_um_codigo_com_menos_de_caracteres() throws Throwable {
 		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(codigo));
 	}
 
-	@Quando("^o serviço nao retorna resultados$")
-	public void o_serviço_nao_retorna_resultados(Map<String, String> map) throws Throwable {
-		codigo = map.get("codigo");
-		wireMockServer.stubFor(get(urlMatching("/ws/" + codigo + ".*")).willReturn(aResponse().withStatus(200)
-				.withHeader("Content-Type", "text/xml").withBody("resultado-pesquisa-StatusEntrega_VAZIO.xml")));
+	@E("^o serviço nao retorna resultados$")
+	public void o_serviço_nao_retorna_resultados() throws Throwable {
+		//codigo = map.get("codigo");
+		wireMockServer.stubFor(get(urlMatching("/ws/" + ".*")).willReturn(aResponse().withStatus(200)
+				.withHeader("Content-Type", "text/xml").withBodyFile("resultado-pesquisa-StatusEntrega_VAZIO.xml")));
+		
+		throwable = catchThrowable(() -> this.status = statusEntregaService.buscar(this.codigo));
 	}
-
-	@Então("^uma mensagem de erro deve ser exibida$")
-	public void uma_mensagem_de_erro_deve_ser_exibida(String message) throws Throwable {
-		assertThat(throwable).hasMessage(message);
-	}	
+	
+	@Então("^uma exceção deve ser lançada com a mensagem de erro:$")
+	public void uma_exceção_deve_ser_lançada_com_a_mensagem_de_erro(String erro) throws Throwable {
+		assertThat(this.status.getErro()).isEqualTo(erro);
+	}
 }

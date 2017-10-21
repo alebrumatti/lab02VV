@@ -10,6 +10,7 @@ public class StatusEntregaService
 	public StatusEncomenda buscar(String codigo) throws Exception
 	{
 		String url = String.format("%s/%s/xml", configuracao.getStatusEntregaUrl(), codigo);
-		return new RemoteService().getAndParseXml(url, StatusEncomenda.class);
+		StatusEncomenda status = new RemoteService().getAndParseXml(url, StatusEncomenda.class);
+		return status;
 	}
 }

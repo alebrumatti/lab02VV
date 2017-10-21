@@ -9,8 +9,8 @@ Funcionalidade: Consulta de Status de Entrega
       | codigo | SQ458226057BR |
     Quando eu informo o codigo de rastreamento válido
     Então o resultado deve ser:
-      | Codigo        | Status			|
-      | SQ458226057BR | Objeto Postado 	|
+      | Codigo        | Descricao	|
+      | SQ458226057BR | Entregue 	|
       
    Cenário: Consultar um codigo de postagem inválido
     Dado um codigo de rastreamento invalido:
@@ -19,7 +19,7 @@ Funcionalidade: Consulta de Status de Entrega
     Então uma exceção deve ser lançada com a mensagem de erro:
     """
     Código de postagem inválido
-    """    
+    """
     
   Cenário: Consultar um codigo de postagem inválido
     Dado um codigo de rastreamento invalido:
@@ -35,7 +35,7 @@ Funcionalidade: Consulta de Status de Entrega
       | codigo | SQ458226057BR |
     Quando eu informo o codigo de rastreamento válido
     E o serviço nao retorna resultados
-    Então uma mensagem de erro deve ser exibida
+    Então uma exceção deve ser lançada com a mensagem de erro:
     """
     Rastreamento não localizado
     """
